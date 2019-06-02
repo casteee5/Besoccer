@@ -20,8 +20,11 @@ import java.util.List;
 import java.util.Scanner;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class PantallaLogin extends JFrame{
 	private JTextField textField;
@@ -53,6 +56,25 @@ public class PantallaLogin extends JFrame{
 		getContentPane().add(passwordField);
 		
 		JButton btnLogin = new JButton("Login");
+		btnLogin.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				Statement st;
+				ResultSet rs,rsp;
+				try {
+					st = connection().createStatement();
+					rs = st.executeQuery ("SELECT user FROM usuarios");
+					rsp = st.executeQuery("SELECT password FROM usuarios");
+					 
+					if(rs.getString("user").equals(textField.getText())&&rsp.getString("password").equals(new String(passwordField.getPassword()))) {
+						System.out.println("Usuario logueado");
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
 		btnLogin.setBounds(80, 118, 89, 23);
 		getContentPane().add(btnLogin);
 		
@@ -65,5 +87,19 @@ public class PantallaLogin extends JFrame{
 		getContentPane().add(txtpnLoginUsuario);
 	}
 	
+	public Connection connection(){
+		 
+		Connection bd=null;
+               try {
+	             bd=DriverManager.getConnection(
+	                   "jdbc:mysql://localhost:3306/portal?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"
+	                    ,"","");
+	        } catch (SQLException ex) {
+	                    System.err.println("La conexion  a bd ha fallado");
+	        }
+              
+      return bd;
+               
+}
 }
 

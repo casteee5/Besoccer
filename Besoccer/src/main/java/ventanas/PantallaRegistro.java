@@ -21,7 +21,11 @@ import java.util.Scanner;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Connection;
 
 public class PantallaRegistro extends JFrame{
 	private JTextField textField;
@@ -71,6 +75,21 @@ public class PantallaRegistro extends JFrame{
 		}
 		
 		JButton btnRegistrar = new JButton("Registrar");
+		btnRegistrar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					PreparedStatement pst;
+			        if(new String(passwordField.getPassword()).equals(new String(passwordField_1.getPassword()))) {  
+						pst = connection().prepareStatement("INSERT INTO usuarios(user,password) VALUES ('"+textField.getText()+"','"+new String(passwordField.getPassword())+"')");
+						pst.execute();
+			        }
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
 		btnRegistrar.setBounds(77, 144, 89, 23);
 		getContentPane().add(btnRegistrar);
 		
@@ -83,75 +102,18 @@ public class PantallaRegistro extends JFrame{
 		getContentPane().add(txtpnRegistrarUsuario);
 	}
 	
-public static List<Competition> buscarLigaPorPais(String opcion) {
-		
-		JfdataManager jfdataManager = new JfdataManager("ae87af9163864e60a8b5ac1ed791fca4");
-		CompetitionList actual = jfdataManager.getAllCompetitions();
-		int i;
-		List<Competition> sameIdCompetitions=new ArrayList<Competition>();
-		
-		switch(opcion) {
-			case "Brasil":
-				opcion="Brazil";
-			break;
-			
-			case "Inglaterra":
-				opcion="England";
-			break;
-			
-			case "Francia":
-				opcion="France";
-			break;
-			
-			case "Alemania":
-				opcion="Germany";
-			break;
-			
-			case "Italia":
-				opcion="Italy";
-			break;
-			
-			case "Holanda":
-				opcion="Netherlands";
-			break;
-			
-			case "Portugal":
-				opcion="Portugal";
-			break;
-			
-			case "España":
-				opcion="Spain";
-			break;
-			
-			case "Resto de Europa":
-				opcion="Europe";
-			break;
-			
-			case "Selecciones":
-				opcion="World";
-			break;
-		}
-		
-		for(i=0;i<actual.getCompetitions().size();i++) {	
-			if(opcion.equals(actual.getCompetitions().get(i).getArea().getName())) {
-				sameIdCompetitions.add(actual.getCompetitions().get(i));
-			}
-			
-		}
-		
-		System.out.println(sameIdCompetitions);
-		return sameIdCompetitions;
-	}
-	public void  Connection(){
+	public Connection connection(){
 		 
-			/*Connection bd=null;
+			Connection bd=null;
 	               try {
 		             bd=DriverManager.getConnection(
 		                   "jdbc:mysql://localhost:3306/portal?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"
 		                    ,"","");
 		        } catch (SQLException ex) {
 		                    System.err.println("La conexion  a bd ha fallado");
-		        }*/
+		        }
+	              
+	      return bd;
 	               
 	}
 }
